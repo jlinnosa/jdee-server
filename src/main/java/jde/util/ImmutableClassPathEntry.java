@@ -41,8 +41,7 @@ class ImmutableClassPathEntry extends ClassPathEntry {
      * @param delegate a <code>ClassPathEntry</code> value
      * @return an <code>ImmutableClassPathEntry</code> value
      */
-    ImmutableClassPathEntry (ClassPathEntry delegate){
-        super();
+    ImmutableClassPathEntry(ClassPathEntry delegate){
         this.delegate = delegate;
     }
 
@@ -51,25 +50,19 @@ class ImmutableClassPathEntry extends ClassPathEntry {
      *
      * @exception IOException if an error occurs
      */
+    @Override
     void load() throws IOException {
-        if (! delegate.isLoaded()) {
+        if (!delegate.isLoaded()) {
             delegate.load();
-        } // end of if (delegate.isLoaded())
+        }
     }
 
-    /**
-     * no-op
-     *
-     */
+    @Override
     void clear() {
         // no-op
     }
 
-    /**
-     * no-op
-     *
-     * @exception IOException if an error occurs
-     */
+    @Override
     void reload() {
         // no-op
     }
@@ -81,9 +74,8 @@ class ImmutableClassPathEntry extends ClassPathEntry {
      * @return a <code>List</code> value
      * @exception IOException if an error occurs
      */
-    List getClassNames(String unqualifiedName)
-        throws IOException {
+    @Override
+    List getClassNames(String unqualifiedName) throws IOException {
         return delegate.getClassNames(unqualifiedName);
     }
-    
-}// ImmutableClassPathEntry
+}

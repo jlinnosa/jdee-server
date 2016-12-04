@@ -46,7 +46,8 @@ abstract class ClassPathEntry {
     protected MultiValueMap nameToClassMap = new MultiValueMap();
     /** a flag indicating whether this instance has been loaded or not */
     protected boolean loaded = false;
-    private static Map entryMap = new HashMap();
+
+    private static Map<File, ClassPathEntry> entryMap = new HashMap<>();
     
     ClassPathEntry () {
     }
@@ -62,12 +63,11 @@ abstract class ClassPathEntry {
      * @exception IllegalArgumentException if resource is not a
      * zip/jar or a directory.
      */
-    static ClassPathEntry instanceForEntry(File resource)
-        throws IOException {
-        ClassPathEntry entry = null;
+    static ClassPathEntry instanceForEntry(File resource) throws IOException {
+        ClassPathEntry entry;
         
         if (entryMap.containsKey(resource)) {
-            entry = (ClassPathEntry)entryMap.get(resource);
+            entry = entryMap.get(resource);
         } else {
             if (resource.getName().toLowerCase().endsWith(".jar")) {
                 entry = new ClassPathZip(resource);
@@ -77,7 +77,7 @@ abstract class ClassPathEntry {
                 entry = new ClassPathDir(resource);
             } else {
                 entry = null;   // shouldn't be in classpath
-            } // end of else
+            }
 
             if (null != entry) {
                 entryMap.put(resource,entry);
@@ -138,16 +138,13 @@ abstract class ClassPathEntry {
      * @return a <code>List</code> value
      * @exception IOException if an error occurs
      */
-    List getClassNames(String unqualifiedName)
-        throws IOException {
-        if (! isLoaded()) {
+    List getClassNames(String unqualifiedName) throws IOException {
+        if (!isLoaded()) {
             load();
-        } // end of if (! isLoaded())
-        
+        }
         return nameToClassMap.getAsList(unqualifiedName);
     }
 
-    
     /**
      * Get the value of loaded.
      * @return value of loaded.
@@ -164,7 +161,7 @@ abstract class ClassPathEntry {
     public void setLoaded(boolean loaded) {
         this.loaded = loaded;
     }
-}// ClassPathEntry
+}
 
 /*
  * $Log: ClassPathEntry.java,v $
@@ -178,5 +175,3 @@ abstract class ClassPathEntry {
  *
  *
  */
-
-// End of ClassPathEntry.java
