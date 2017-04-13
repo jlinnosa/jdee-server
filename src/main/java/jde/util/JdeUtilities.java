@@ -38,7 +38,7 @@ public class JdeUtilities {
 
   /** A cache of the items that are important across projects,
    * indexed by the project name */
-  private static Map projectCache = new HashMap();
+  private static Map<String,ProjectClasses> projectCache = new HashMap<>();
 
   /** The current project so that callers need not pass in the
       project name every time.  This is convenient, but not
@@ -67,15 +67,8 @@ public class JdeUtilities {
   public static final String END_PAREN = ")";
   public static final String DOUBLE_QUOTE = "\"";
   public static final String SPACE = " ";
-  public static final String START_LIST;
-  static {
-    StringBuffer sb = new StringBuffer (10);
-    sb.append(START_PAREN);
-    sb.append(LIST);
-    sb.append(SPACE);
-    START_LIST = sb.toString();
-  }
-    
+  public static final String START_LIST = START_PAREN + LIST + SPACE;
+
   /**
    * Jde should call this everytime the project changes, or if the
    * classpath needs to be updated.
@@ -100,7 +93,7 @@ public class JdeUtilities {
   }
     
   public static ProjectClasses getCurrentProjectClass() {
-    return (ProjectClasses) projectCache.get(currentProjectName);
+    return projectCache.get(currentProjectName);
   }
 
   /**
@@ -115,8 +108,7 @@ public class JdeUtilities {
         dcl.loadClass( fqn );
         System.out.println( "\"" + fqn + "\"");
         return;
-      } catch (ClassNotFoundException e) {
-      } catch (NoClassDefFoundError e) {
+      } catch (ClassNotFoundException | NoClassDefFoundError e) {
       } catch (Exception e) {
         System.out.println("(error \"Trying to load " + fqn +
                            " caused a Java exception: " + e + "\")");
@@ -152,8 +144,7 @@ public class JdeUtilities {
    * reloads the current project's classpath.
    */
   public static void updateClassList(String classPathEntry) {
-    ProjectClasses pc =
-      (ProjectClasses) projectCache.get(getCurrentProjectName());
+    ProjectClasses pc = projectCache.get(getCurrentProjectName());
 
     try {
       if (classPathEntry!=null) {
@@ -181,19 +172,15 @@ public class JdeUtilities {
    * @param className a value of type 'String'
    */
   public static void getQualifiedName(String className) {
-    ProjectClasses pc = null;
-    StringBuffer result = null;
-
     try {
-      pc = (ProjectClasses)projectCache.get(currentProjectName);
-      result = new StringBuffer(START_PAREN);
-      result.append(LIST);
+      ProjectClasses pc = projectCache.get(currentProjectName);
 
-      for (Iterator i = pc.getClassNames(className).iterator();
-           i.hasNext();) {
+      StringBuilder result = new StringBuilder(START_PAREN);
+      result.append(LIST);
+      for (String o : pc.getClassNames(className)) {
         result.append(SPACE);
         result.append(DOUBLE_QUOTE);
-        result.append(i.next().toString());
+        result.append(o);
         result.append(DOUBLE_QUOTE);
       }
       result.append(END_PAREN);
@@ -205,7 +192,7 @@ public class JdeUtilities {
   }
 
   public static void getJavaVersion() {
-    StringBuffer sb = new StringBuffer(30);
+    StringBuilder sb = new StringBuilder(30);
     sb.append(DOUBLE_QUOTE);
     sb.append(System.getProperty("java.version"));
     sb.append(DOUBLE_QUOTE);
