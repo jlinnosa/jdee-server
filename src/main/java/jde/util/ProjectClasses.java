@@ -183,14 +183,14 @@ class ProjectClasses {
 			 
       // Iterate through extension directories
       while (st.hasMoreTokens()) {
-	extFiles = new File(st.nextToken()).listFiles();
+        extFiles = new File(st.nextToken()).listFiles();
 				 
-	if (extFiles != null) {
-	  // Iterate through files added them to classPath
-	  for (int i = 0; i < extFiles.length; i++) {
-	    addToBootClassPath(extFiles[i]);
-	  }
-	}
+        if (extFiles != null) {
+          // Iterate through files added them to classPath
+          for (int i = 0; i < extFiles.length; i++) {
+            addToBootClassPath(extFiles[i]);
+          }
+        }
       }
     }
   }
@@ -199,12 +199,12 @@ class ProjectClasses {
     if (file.exists()) {
       ClassPathEntry entry = ClassPathEntry.instanceForEntry(file);
       if (null != entry) {
-	bootClassPathEntries.add(new ImmutableClassPathEntry(entry));
+        bootClassPathEntries.add(new ImmutableClassPathEntry(entry));
       }
-    } // end of if (file.exists())
+    }
   }
   
-}// ProjectClasses
+}
 
 /*
  * $Log: ProjectClasses.java,v $
@@ -227,5 +227,3 @@ class ProjectClasses {
  *
  *
  */
-
-// End of ProjectClasses.java
