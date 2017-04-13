@@ -25,12 +25,15 @@ package jde.juci;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -42,9 +45,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConnectionImplTest {
 
-    public static interface CallTest {
+    public interface CallTest {
         void doIt(Object o);
     }
+
+    @Rule
+    public Timeout globalTimeout = new Timeout(1, TimeUnit.SECONDS);
 
     @Before
     public void setUp() {
@@ -100,5 +106,4 @@ public class ConnectionImplTest {
         assertEquals("hello world", echo.ack("hello world"));
         ((Connection) echo).end();
     }
-
 }
