@@ -65,24 +65,19 @@ class ProjectClasses {
   ProjectClasses(String classPath) throws IOException {
     this.classPath = classPath;
 
-    String classPathEntry;
-    File classPathFile;
-    StringTokenizer st = new StringTokenizer(classPath,
-					     File.pathSeparator);
+    StringTokenizer st = new StringTokenizer(classPath, File.pathSeparator);
 
     while (st.hasMoreTokens()) {
-      classPathEntry = st.nextToken();
-      classPathFile = new File(classPathEntry);
+      String classPathEntry = st.nextToken();
+      File classPathFile = new File(classPathEntry);
       if (classPathFile.exists()) {
-	ClassPathEntry cpe = ClassPathEntry.instanceForEntry(classPathFile);
-	if (cpe != null) {
-	  classPathEntries.add(cpe);	 
-	} // end of if (cpe != null)	      
+        ClassPathEntry cpe = ClassPathEntry.instanceForEntry(classPathFile);
+        if (cpe != null) {
+          classPathEntries.add(cpe);
+        }
       }
     }
   }
-
-
 
   /**
    * Reload classes in a single classpath entry, which may be a class,
