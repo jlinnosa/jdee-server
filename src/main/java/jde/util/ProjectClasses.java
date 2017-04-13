@@ -23,7 +23,6 @@ package jde.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -125,22 +124,21 @@ class ProjectClasses {
    * @return list of qualified names.
    * @exception IOException if an error occurs
    */
-  List getClassNames(String unqualifiedName) throws IOException {
-    List rv = new ArrayList();
-    for (Iterator i = classPathEntries.iterator(); i.hasNext();) {
-
-      ClassPathEntry cpe = (ClassPathEntry) i.next();
-      List classNames = cpe.getClassNames(unqualifiedName);
-      for (Iterator iter = classNames.iterator(); iter.hasNext();) {
-          String className = (String) iter.next();
-          if (!rv.contains(className)) {
-              rv.add(className);
-          }
+  List<String> getClassNames(String unqualifiedName) throws IOException {
+    List<String> rv = new ArrayList<>();
+    for (ClassPathEntry cpe : classPathEntries) {
+      @SuppressWarnings("unchecked")
+      List<String> classNames = (List<String>) cpe.getClassNames(unqualifiedName);
+      for (String className : classNames) {
+        if (!rv.contains(className)) {
+          rv.add(className);
+        }
       }
     }
     return rv;
   }
 
+  @Override
   public String toString() {
     return classPathEntries.toString();
   }
