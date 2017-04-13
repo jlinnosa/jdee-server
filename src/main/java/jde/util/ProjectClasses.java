@@ -42,19 +42,19 @@ class ProjectClasses {
   private String classPath;
   
   // the boot classpath is loaded at startup.
-  private static ArrayList bootClassPathEntries = new ArrayList();
+  private static ArrayList<ClassPathEntry> bootClassPathEntries = new ArrayList<>();
   
   static {
     try {
       loadBootClassPathEntries();
     } catch (IOException e) {
       e.printStackTrace(System.err);
-    } // end of try-catch
+    }
   }
 
   // take a shallow clone of the boot classpath as the starting
   // point for the project classpath.
-  private List classPathEntries = (List)bootClassPathEntries.clone();
+  private List<ClassPathEntry> classPathEntries = (List<ClassPathEntry>) bootClassPathEntries.clone();
 
   /**
    * Creates a new <code>ProjectClasses</code> instance.
@@ -101,22 +101,17 @@ class ProjectClasses {
     }
   }
 
-
   /**
    * Reload all classes in classpath.
    *
    * @exception IOException if an error occurs
    */
   void reloadClasses() throws IOException {
-    ClassPathEntry cpe;
-
-    for (Iterator i = classPathEntries.iterator(); i.hasNext();) {
-      cpe = (ClassPathEntry)i.next();
+    for (ClassPathEntry cpe : classPathEntries) {
       cpe.reload();
     }
   }
 
-    
   /**
    * Get the classpath represented by this project.
    *
