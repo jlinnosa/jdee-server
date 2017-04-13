@@ -30,9 +30,6 @@ import java.util.*;
  */
 
 public class MultiValueMap extends HashMap {
-    public MultiValueMap () {
-        super();
-    }
 
     /**
      * Convenience method for retrieving the value for
@@ -50,11 +47,11 @@ public class MultiValueMap extends HashMap {
             if (o instanceof List) {
                 return (List)o;
             } else {
-                return Arrays.asList(new Object[] { o });
-            } // end of else
+                return Arrays.asList(o);
+            }
         } else {
-            return Collections.EMPTY_LIST;
-        } // end of else
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -81,4 +78,4 @@ public class MultiValueMap extends HashMap {
         }
         return null;
     }
-}// MultiValueMap
+}
