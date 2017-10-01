@@ -10,7 +10,7 @@ JDEE Java backend
 2. At the terminal enter the following commands in a directory of your choice:
 3. ```$ git clone https://github.com/jdee-emacs/jdee-server.git```
 4. ```$ cd jdee-server```
-5. ```$ mvn -Dmaven.test.skip=true assembly:assembly```
+5. ```$ mvn -Dmaven.test.skip=true package```
 6. Copy ```target/jdee-bundle-${version}.jar``` to a directory of your choice (e.g. ```~/myJars```)
 7. Start Emacs and enter the following commands:
 8. ```M-x customize```
