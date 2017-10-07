@@ -153,25 +153,23 @@ class ProjectClasses {
    * @exception IOException if an error occurs
    */
   static void loadBootClassPathEntries() throws IOException {
-    StringTokenizer st;
-    File file;
-    File[] extFiles;
-        
     String bootClassPath = System.getProperty("sun.boot.class.path");
     String extDirs = System.getProperty("java.ext.dirs");
 
-    st = new StringTokenizer(bootClassPath,File.pathSeparator);
-    while (st.hasMoreTokens()) {
-      file = new File(st.nextToken());
-      addToBootClassPath(file);
+    if (bootClassPath != null) {
+      StringTokenizer st = new StringTokenizer(bootClassPath, File.pathSeparator);
+      while (st.hasMoreTokens()) {
+        File file = new File(st.nextToken());
+        addToBootClassPath(file);
+      }
     }
         
     if (extDirs != null) {
-      st = new StringTokenizer(extDirs,File.pathSeparator);
+      StringTokenizer st = new StringTokenizer(extDirs,File.pathSeparator);
 			 
       // Iterate through extension directories
       while (st.hasMoreTokens()) {
-        extFiles = new File(st.nextToken()).listFiles();
+        File[] extFiles = new File(st.nextToken()).listFiles();
 				 
         if (extFiles != null) {
           // Iterate through files added them to classPath
