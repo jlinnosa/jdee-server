@@ -37,12 +37,12 @@ import java.util.StringTokenizer;
  */
 
 class ProjectClasses {
-  
+
   private String classPath;
-  
+
   // the boot classpath is loaded at startup.
   private static ArrayList<ClassPathEntry> bootClassPathEntries = new ArrayList<>();
-  
+
   static {
     try {
       loadBootClassPathEntries();
@@ -114,7 +114,7 @@ class ProjectClasses {
   public String getClassPath() {
     return classPath;
   }
-    
+
   /**
    * Get fully qualified classnames in this classpath that
    * matching the specified unqualified name.
@@ -146,7 +146,7 @@ class ProjectClasses {
   public static void main (String[] args) throws Exception {
     System.out.println(new ProjectClasses(System.getProperty("java.class.path")).getClassNames(args[0]));
   }
-    
+
   /**
    * loads the boot classpath entries.
    *
@@ -163,14 +163,14 @@ class ProjectClasses {
         addToBootClassPath(file);
       }
     }
-        
+
     if (extDirs != null) {
       StringTokenizer st = new StringTokenizer(extDirs,File.pathSeparator);
-			 
+
       // Iterate through extension directories
       while (st.hasMoreTokens()) {
         File[] extFiles = new File(st.nextToken()).listFiles();
-				 
+
         if (extFiles != null) {
           // Iterate through files added them to classPath
           for (int i = 0; i < extFiles.length; i++) {
@@ -179,6 +179,10 @@ class ProjectClasses {
         }
       }
     }
+
+    // Also try the file listing the built-in classes for JDE 9+
+    bootClassPathEntries.add(new ClassList());
+
   }
 
   static void addToBootClassPath(File file) throws IOException {
@@ -189,7 +193,7 @@ class ProjectClasses {
       }
     }
   }
-  
+
 }
 
 /*
