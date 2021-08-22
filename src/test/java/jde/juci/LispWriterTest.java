@@ -1,8 +1,7 @@
 /*
  * Copyright (C) 2002, 2003 by Nick Sieger
+ * Copyright 2021 Jaakko Linnosaari
  *
- * $Revision: 1.1 $
- * $Date: 2003/02/15 20:58:26 $
  *
  * Author: Nick Sieger <nsieger@bitstream.net>
  *
@@ -35,7 +34,6 @@ import static org.junit.Assert.assertEquals;
  * Test the {@link LispWriter} class.
  *
  * @author <a href="mailto:nsieger@bitstream.net">Nick Sieger</a>
- * @version 1.0
  */
 public class LispWriterTest {
 
@@ -53,7 +51,13 @@ public class LispWriterTest {
     }
 
     @Test
-    public void testInt1() {
+    public void testWriteString() {
+	lwriter.writeString("\"abc\'\\\ndef\b\r\t\f");
+	assertEquals("\"\\\"abc\\\'\\\\\\ndef\\b\\r\\t\\f\"", output.toString());
+    }
+
+    @Test
+    public void testIntPrimitive() {
         lwriter.writeInt(1010);
         assertEquals("1010", output.toString());
         reset();
@@ -62,11 +66,65 @@ public class LispWriterTest {
     }
 
     @Test
-    public void testDouble1() {
+    public void testIntObject() {
+        lwriter.writeInt(new Integer(1010));
+        assertEquals("1010", output.toString());
+        reset();
+        lwriter.writeUnknown(new Integer(1010));
+        assertEquals("1010", output.toString());
+    }
+
+    @Test
+    public void testLongPrimitive() {
+        lwriter.writeLong(101020203030l);
+        assertEquals("101020203030", output.toString());
+        reset();
+        lwriter.writeUnknown(101020203030l);
+        assertEquals("101020203030", output.toString());
+    }
+
+    @Test
+    public void testLongObject() {
+        lwriter.writeLong(new Long(101020203030l));
+        assertEquals("101020203030", output.toString());
+        reset();
+        lwriter.writeUnknown(new Long(101020203030l));
+        assertEquals("101020203030", output.toString());
+    }
+
+    @Test
+    public void testFloatPrimitive() {
+        lwriter.writeFloat(10.1f);
+        assertEquals("10.1", output.toString());
+        reset();
+        lwriter.writeUnknown(10.1f);
+        assertEquals("10.1", output.toString());
+    }
+
+    @Test
+    public void testFloatObject() {
+	lwriter.writeFloat(new Float(10.1f));
+        assertEquals("10.1", output.toString());
+        reset();
+        lwriter.writeUnknown(new Float(10.1f));
+        assertEquals("10.1", output.toString());
+    }
+
+    @Test
+    public void testDoublePrimitive() {
         lwriter.writeDouble(10.1d);
         assertEquals("10.1", output.toString());
         reset();
         lwriter.writeUnknown(10.1d);
+        assertEquals("10.1", output.toString());
+    }
+
+    @Test
+    public void testDoubleObject() {
+	lwriter.writeDouble(new Double(10.1d));
+        assertEquals("10.1", output.toString());
+        reset();
+        lwriter.writeUnknown(new Double(10.1d));
         assertEquals("10.1", output.toString());
     }
 
@@ -92,15 +150,56 @@ public class LispWriterTest {
     }
 
     @Test
-    public void testChars() {
+    public void testWriteCharPrimitive() {
         lwriter.writeChar('a');
-        assertEquals("?a", output.toString());
-        reset();
-        lwriter.writeChar('?');
-        assertEquals("?\\?", output.toString());
-        reset();
-        lwriter.writeChar('\\');
-        assertEquals("?\\\\", output.toString());
+	lwriter.writeChar('\"');
+	lwriter.writeChar('\'');
+	lwriter.writeChar('\\');
+	lwriter.writeChar('?');
+	lwriter.writeChar(')');
+	lwriter.writeChar('(');
+	lwriter.writeChar(']');
+	lwriter.writeChar('[');
+	lwriter.writeChar('\n');
+	lwriter.writeChar('\b');
+	lwriter.writeChar('\r');
+	lwriter.writeChar('\t');
+	lwriter.writeChar('\f');
+        assertEquals("?a?\\\"?\\\'?\\\\?\\??\\)?\\(?\\]?\\[?\\n?\\b?\\r?\\t?\\f",
+		     output.toString());
+    }
+
+    @Test
+    public void testWriteCharObject() {
+	lwriter.writeChar(new Character('b'));
+	lwriter.writeChar(new Character('a'));
+	lwriter.writeChar(new Character('z'));
+	lwriter.writeChar(new Character('\n'));
+	lwriter.writeChar(new Character('\''));
+	lwriter.writeChar(new Character('\t'));
+	lwriter.writeUnknown(new Character('f'));
+	assertEquals("?b?a?z?\\n?\\\'?\\t?f", output.toString());
+    }
+
+    @Test
+    public void testBooleanPrimitive() {
+	lwriter.writeBoolean(true);
+	lwriter.writeBoolean(false);
+	assertEquals("tnil", output.toString());
+    }
+
+    @Test
+    public void testBooleanObject() {
+	lwriter.writeBoolean(new Boolean(true));
+	lwriter.writeBoolean(new Boolean(false));
+	lwriter.writeUnknown(new Boolean(true));
+	assertEquals("tnilt", output.toString());
+    }
+
+    @Test
+    public void testWriteNull() {
+	lwriter.writeUnknown(null);
+	assertEquals("\'null", output.toString());
     }
 
     @Test
@@ -130,6 +229,10 @@ public class LispWriterTest {
         reset();
         lwriter.writeUnknown(l);
         assertEquals("'(apply '+ 1 2 '(3 4))", output.toString());
+	reset();
+	lwriter.setAutoQuoteLists(false);
+	lwriter.writeUnknown(l);
+        assertEquals("(apply '+ 1 2 '(3 4))", output.toString());
     }
 
     @Test
