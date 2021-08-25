@@ -1,8 +1,6 @@
 /*
  * Copyright (C) 2002 by Nick Sieger
- *
- * $Revision: 1.1 $
- * $Date: 2003/02/15 20:58:26 $
+ * Copyright 2021 Jaakko Linnosaari
  *
  * Author: Nick Sieger <nsieger@bitstream.net>
  *
@@ -26,7 +24,7 @@ package jde.juci;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -53,7 +51,7 @@ public class LispWriter {
      */
     public static final Quoted NULL = new Quoted(new Symbol("null"));
 
-    private PrintWriter output;
+    private final PrintWriter output;
     private boolean autoQuoteLists = true;
     private boolean inQuote = false;
 
@@ -72,7 +70,7 @@ public class LispWriter {
         this.autoQuoteLists = autoQuoteLists;
     }
 
-    public void writeList(List<Cons> list) {
+    public void writeList(Collection<?> list) {
         if (isAutoQuoteLists() && !inQuote) {
             output.write("'");
             inQuote = true;
@@ -83,19 +81,18 @@ public class LispWriter {
         }
     }
 
-    public void writeForm(List<Cons> list) {
+    public void writeForm(Collection<?> c) {
         output.print("(");
-        for (int i = 0; i < list.size(); i++) {
-            if (i > 0) {
+        for (Iterator<?> i = c.iterator(); i.hasNext();) {
+            writeUnknown(i.next());
+            if (i.hasNext())
                 output.print(" ");
-            }
-            writeUnknown(list.get(i));
         }
         output.print(")");
     }
 
     public void writeAlist(Map<Object, Object> map) {
-        List<Cons> alist = new ArrayList<Cons>();
+        Collection<Cons> alist = new ArrayList<>();
         for (Map.Entry<Object, Object> e : map.entrySet()) {
             alist.add(new Cons(e.getKey(), e.getValue()));
         }
@@ -149,32 +146,16 @@ public class LispWriter {
         output.write(Integer.toString(n));
     }
 
-    public void writeInt(Integer n) {
-        writeInt(n.intValue());
-    }
-
     public void writeLong(long n) {
         output.write(Long.toString(n));
-    }
-
-    public void writeLong(Long n) {
-        writeLong(n.longValue());
     }
 
     public void writeFloat(float f) {
         output.write(Float.toString(f));
     }
 
-    public void writeFloat(Float f) {
-        writeFloat(f.floatValue());
-    }
-
     public void writeDouble(double d) {
         output.write(Double.toString(d));
-    }
-
-    public void writeDouble(Double d) {
-        writeDouble(d.doubleValue());
     }
 
     public void writeChar(char c) {
@@ -225,10 +206,6 @@ public class LispWriter {
         }
     }
 
-    public void writeBoolean(Boolean b) {
-        writeBoolean(b.booleanValue());
-    }
-
     public void writeT() {
         writeSymbol(T);
     }
@@ -272,7 +249,7 @@ public class LispWriter {
         if (o instanceof Number) {
             writeNumber((Number) o);
         } else if (o instanceof Collection) {
-            writeList(new ArrayList((Collection) o));
+            writeList((Collection) o);
         } else if (o instanceof Map) {
             writeAlist((Map) o);
         } else if (o instanceof Cons) {
