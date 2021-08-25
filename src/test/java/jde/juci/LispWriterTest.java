@@ -52,8 +52,8 @@ public class LispWriterTest {
 
     @Test
     public void testWriteString() {
-        lwriter.writeString("\"abc\'\\\ndef\b\r\t\f");
-        assertEquals("\"\\\"abc\\\'\\\\\\ndef\\b\\r\\t\\f\"", output.toString());
+        lwriter.writeString("\"abc'\\\ndef\b\r\t\f");
+        assertEquals("\"\\\"abc\\'\\\\\\ndef\\b\\r\\t\\f\"", output.toString());
     }
 
     @Test
@@ -67,28 +67,28 @@ public class LispWriterTest {
 
     @Test
     public void testIntObject() {
-        lwriter.writeInt(new Integer(1010));
+        lwriter.writeInt(Integer.valueOf(1010));
         assertEquals("1010", output.toString());
         reset();
-        lwriter.writeUnknown(new Integer(1010));
+        lwriter.writeUnknown(Integer.valueOf(1010));
         assertEquals("1010", output.toString());
     }
 
     @Test
     public void testLongPrimitive() {
-        lwriter.writeLong(101020203030l);
+        lwriter.writeLong(101020203030L);
         assertEquals("101020203030", output.toString());
         reset();
-        lwriter.writeUnknown(101020203030l);
+        lwriter.writeUnknown(101020203030L);
         assertEquals("101020203030", output.toString());
     }
 
     @Test
     public void testLongObject() {
-        lwriter.writeLong(new Long(101020203030l));
+        lwriter.writeLong(Long.valueOf(101020203030L));
         assertEquals("101020203030", output.toString());
         reset();
-        lwriter.writeUnknown(new Long(101020203030l));
+        lwriter.writeUnknown(Long.valueOf(101020203030L));
         assertEquals("101020203030", output.toString());
     }
 
@@ -103,10 +103,10 @@ public class LispWriterTest {
 
     @Test
     public void testFloatObject() {
-        lwriter.writeFloat(new Float(10.1f));
+        lwriter.writeFloat(Float.valueOf(10.1f));
         assertEquals("10.1", output.toString());
         reset();
-        lwriter.writeUnknown(new Float(10.1f));
+        lwriter.writeUnknown(Float.valueOf(10.1f));
         assertEquals("10.1", output.toString());
     }
 
@@ -121,10 +121,10 @@ public class LispWriterTest {
 
     @Test
     public void testDoubleObject() {
-        lwriter.writeDouble(new Double(10.1d));
+        lwriter.writeDouble(Double.valueOf(10.1d));
         assertEquals("10.1", output.toString());
         reset();
-        lwriter.writeUnknown(new Double(10.1d));
+        lwriter.writeUnknown(Double.valueOf(10.1d));
         assertEquals("10.1", output.toString());
     }
 
@@ -165,20 +165,20 @@ public class LispWriterTest {
         lwriter.writeChar('\r');
         lwriter.writeChar('\t');
         lwriter.writeChar('\f');
-        assertEquals("?a?\\\"?\\\'?\\\\?\\??\\)?\\(?\\]?\\[?\\n?\\b?\\r?\\t?\\f",
+        assertEquals("?a?\\\"?\\'?\\\\?\\??\\)?\\(?\\]?\\[?\\n?\\b?\\r?\\t?\\f",
                      output.toString());
     }
 
     @Test
     public void testWriteCharObject() {
-        lwriter.writeChar(new Character('b'));
-        lwriter.writeChar(new Character('a'));
-        lwriter.writeChar(new Character('z'));
-        lwriter.writeChar(new Character('\n'));
-        lwriter.writeChar(new Character('\''));
-        lwriter.writeChar(new Character('\t'));
-        lwriter.writeUnknown(new Character('f'));
-        assertEquals("?b?a?z?\\n?\\\'?\\t?f", output.toString());
+        lwriter.writeChar(Character.valueOf('b'));
+        lwriter.writeChar(Character.valueOf('a'));
+        lwriter.writeChar(Character.valueOf('z'));
+        lwriter.writeChar(Character.valueOf('\n'));
+        lwriter.writeChar(Character.valueOf('\''));
+        lwriter.writeChar(Character.valueOf('\t'));
+        lwriter.writeUnknown(Character.valueOf('f'));
+        assertEquals("?b?a?z?\\n?\\'?\\t?f", output.toString());
     }
 
     @Test
@@ -190,21 +190,21 @@ public class LispWriterTest {
 
     @Test
     public void testBooleanObject() {
-        lwriter.writeBoolean(new Boolean(true));
-        lwriter.writeBoolean(new Boolean(false));
-        lwriter.writeUnknown(new Boolean(true));
+        lwriter.writeBoolean(Boolean.TRUE);
+        lwriter.writeBoolean(Boolean.FALSE);
+        lwriter.writeUnknown(Boolean.TRUE);
         assertEquals("tnilt", output.toString());
     }
 
     @Test
     public void testWriteNull() {
         lwriter.writeUnknown(null);
-        assertEquals("\'null", output.toString());
+        assertEquals("'null", output.toString());
     }
 
     @Test
     public void testForm1() {
-        List l = Arrays.asList(
+        List<Object> l = Arrays.asList(
                 new Symbol("message"), "Hello %s", new Symbol("user-full-name"));
         lwriter.writeForm(l);
         assertEquals("(message \"Hello %s\" user-full-name)", output.toString());
@@ -215,7 +215,7 @@ public class LispWriterTest {
 
     @Test
     public void testWriteUnknowWithACollection() {
-        Collection<Object> c = new ArrayDeque();
+        Collection<Object> c = new ArrayDeque<>();
         c.add(new Symbol("message"));
         c.add("Hello %s");
         c.add(new Symbol("user-full-name"));
@@ -225,12 +225,12 @@ public class LispWriterTest {
 
     @Test
     public void testQuoted1() {
-        List l = new ArrayList();
+        List<Object> l = new ArrayList<>();
         l.add(new Symbol("apply"));
         l.add(new Quoted(new Symbol("+")));
         l.add(1);
         l.add(2);
-        List inner = new ArrayList();
+        List<Object> inner = new ArrayList<>();
         inner.add(3);
         inner.add(4);
         l.add(new Quoted(inner));
@@ -247,10 +247,10 @@ public class LispWriterTest {
 
     @Test
     public void testWriteJdeeJuciInvokeElispForm() {
-        List eval = new ArrayList();
+        List<Object> eval = new ArrayList<>();
         eval.add(new Symbol("jdee-juci-invoke-elisp"));
 
-        List form = new ArrayList();
+        List<Object> form = new ArrayList<>();
         form.add(new Symbol("message"));
         form.addAll(Arrays.asList("hello %s", "nick"));
 
