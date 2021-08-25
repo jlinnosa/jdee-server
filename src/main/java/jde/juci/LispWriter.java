@@ -149,32 +149,16 @@ public class LispWriter {
         output.write(Integer.toString(n));
     }
 
-    public void writeInt(Integer n) {
-        writeInt(n.intValue());
-    }
-
     public void writeLong(long n) {
         output.write(Long.toString(n));
-    }
-
-    public void writeLong(Long n) {
-        writeLong(n.longValue());
     }
 
     public void writeFloat(float f) {
         output.write(Float.toString(f));
     }
 
-    public void writeFloat(Float f) {
-        writeFloat(f.floatValue());
-    }
-
     public void writeDouble(double d) {
         output.write(Double.toString(d));
-    }
-
-    public void writeDouble(Double d) {
-        writeDouble(d.doubleValue());
     }
 
     public void writeChar(char c) {
@@ -223,10 +207,6 @@ public class LispWriter {
         } else {
             writeNil();
         }
-    }
-
-    public void writeBoolean(Boolean b) {
-        writeBoolean(b.booleanValue());
     }
 
     public void writeT() {
